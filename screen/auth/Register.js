@@ -1,11 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, TextInput, View, Pressable } from "react-native";
+import { StyleSheet, Text, View, Pressable, Button } from "react-native";
 import { Formik } from "formik";
 import * as yup from "yup";
+import firebase from "firebase";
 
 import { globalStyles } from "../../assets";
 import { color } from "../../constants/color";
-import { ErrorMessage } from "../../components";
+import { FormButton, FormInput } from "../../components";
 import { min } from "../../constants/error";
 
 const initalValues = {
@@ -22,6 +23,14 @@ const regisetSchema = yup.object({
 
 const Register = () => {
   const submitHandler = (values, actions) => {
+    const { email, name, password } = values;
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((response) => console.log(response))
+      .catch((error) => {
+        console.log(error);
+      });
     actions.resetForm();
   };
 
@@ -45,27 +54,19 @@ const Register = () => {
           }) => (
             <View style={styles.view}>
               <Text style={styles.textTitle}> Instaclone</Text>
-              <TextInput
-                style={[
-                  styles.textInput,
-                  errors.name && touched.name ? styles.textInputError : null,
-                ]}
+              <FormInput
+                isValid={errors.name && touched.name}
                 placeholder='Name'
+                errorMessage={errors.name}
                 name='name'
                 value={values.name}
                 onBlur={handleBlur("name")}
                 onChangeText={handleChange("name")}
               />
 
-              {errors.name && touched.name ? (
-                <ErrorMessage message={errors.name} />
-              ) : null}
-
-              <TextInput
-                style={[
-                  styles.textInput,
-                  errors.email && touched.email ? styles.textInputError : null,
-                ]}
+              <FormInput
+                isValid={errors.email && touched.email}
+                errorMessage={errors.email}
                 placeholder='Email'
                 keyboardType='email-address'
                 name='email'
@@ -74,17 +75,9 @@ const Register = () => {
                 onChangeText={handleChange("email")}
               />
 
-              {errors.email && touched.email ? (
-                <ErrorMessage message={errors.email} />
-              ) : null}
-
-              <TextInput
-                style={[
-                  styles.textInput,
-                  errors.password && touched.password
-                    ? styles.textInputError
-                    : null,
-                ]}
+              <FormInput
+                isValid={errors.password && touched.password}
+                errorMessage={errors.password}
                 placeholder='Password'
                 name='password'
                 secureTextEntry={true}
@@ -93,30 +86,11 @@ const Register = () => {
                 onChangeText={handleChange("password")}
               />
 
-              {errors.password && touched.password ? (
-                <ErrorMessage message={errors.password} />
-              ) : null}
-
-              <Pressable
+              <FormButton
+                validForm={isValid && dirty}
+                label='Create an Account'
                 onPress={handleSubmit}
-                disabled={isValid && dirty}
-                style={
-                  isValid && dirty
-                    ? [
-                        styles.button,
-                        {
-                          backgroundColor: color.primary,
-                        },
-                      ]
-                    : [
-                        styles.button,
-                        {
-                          backgroundColor: color.blue[300],
-                        },
-                      ]
-                }>
-                <Text style={styles.textButton}>Create an Account</Text>
-              </Pressable>
+              />
             </View>
           )}
         </Formik>
@@ -143,30 +117,6 @@ const styles = StyleSheet.create({
   textTitle: {
     fontSize: 45,
     fontFamily: "GrandHotel-Regular",
-  },
-  textInput: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#bbb",
-    borderRadius: 5,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginVertical: 5,
-  },
-  textInputError: {
-    borderColor: color.red[600],
-  },
-  textButton: {
-    textAlign: "center",
-    color: "#fff",
-    fontSize: 16,
-  },
-  button: {
-    width: "100%",
-    marginTop: 15,
-    borderRadius: 5,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
   },
   divider: {
     width: "100%",
