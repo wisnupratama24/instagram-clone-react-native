@@ -1,21 +1,49 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { useFonts } from "expo-font";
+
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { LandingScreen, LoadingScreen, RegisterScreen } from "./screen";
+import { LandingScreenName, RegisterScreenName } from "./constants/routes";
+import { View, TouchableWithoutFeedback, Keyboard } from "react-native";
 
 export default function App() {
+  const Stack = createStackNavigator();
+
+  const [loaded] = useFonts({
+    "GrandHotel-Regular": require("./assets/fonts/GrandHotel-Regular.ttf"),
+  });
+
+  if (!loaded) {
+    return <LoadingScreen />;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#F4F5F6",
+        }}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName={LandingScreenName}>
+            <Stack.Screen
+              name={LandingScreenName}
+              component={LandingScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name={RegisterScreenName}
+              component={RegisterScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
