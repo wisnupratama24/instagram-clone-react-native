@@ -2,13 +2,13 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { color } from "../constants/color";
 
-const ErrorMessage = ({ message }) => {
+function ErrorMessage({ message }) {
   return (
     <View style={styles.container}>
       <Text style={styles.textMessage}>{message}</Text>
     </View>
   );
-};
+}
 
 export default ErrorMessage;
 

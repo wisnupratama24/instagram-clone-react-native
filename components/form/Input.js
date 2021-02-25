@@ -1,19 +1,20 @@
 import React from "react";
 import { StyleSheet, TextInput, View } from "react-native";
-import { ErrorMessage } from "..";
+import ErrorMessage from "../ErrorMessage";
 import { color } from "../../constants/color";
 
-const Input = ({ isValid, errorMessage, ...props }) => {
+function Input({ isValid, message, ...props }) {
+  console.log(isValid);
   return (
     <>
       <TextInput
         style={[styles.textInput, isValid ? styles.textInputError : null]}
         {...props}
       />
-      {isValid ? <ErrorMessage message={errorMessage} /> : null}
+      {isValid ? <ErrorMessage message={message} /> : null}
     </>
   );
-};
+}
 
 export default Input;
 

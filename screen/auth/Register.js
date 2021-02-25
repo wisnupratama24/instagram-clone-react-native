@@ -7,7 +7,9 @@ import firebase from "firebase";
 import { globalStyles } from "../../assets";
 import { color } from "../../constants/color";
 import { FormButton, FormInput } from "../../components";
+
 import { min } from "../../constants/error";
+import { LandingScreenName } from "../../constants/routes";
 
 const initalValues = {
   email: "",
@@ -18,16 +20,26 @@ const initalValues = {
 const regisetSchema = yup.object({
   name: yup.string().required().min(4, min("Name", 4)),
   email: yup.string().required().email(),
-  password: yup.string().required().min(5, min("Password", 5)),
+  password: yup.string().required().min(6, min("Password", 5)),
 });
 
-const Register = () => {
+const Register = ({ navigation }) => {
   const submitHandler = (values, actions) => {
     const { email, name, password } = values;
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then((response) => console.log(response))
+      .then((response) => {
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .set({
+            name,
+            email,
+          });
+        navigation.navigate(LandingScreenName);
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -57,7 +69,7 @@ const Register = () => {
               <FormInput
                 isValid={errors.name && touched.name}
                 placeholder='Name'
-                errorMessage={errors.name}
+                message={errors.name}
                 name='name'
                 value={values.name}
                 onBlur={handleBlur("name")}
@@ -66,7 +78,7 @@ const Register = () => {
 
               <FormInput
                 isValid={errors.email && touched.email}
-                errorMessage={errors.email}
+                message={errors.email}
                 placeholder='Email'
                 keyboardType='email-address'
                 name='email'
@@ -77,7 +89,7 @@ const Register = () => {
 
               <FormInput
                 isValid={errors.password && touched.password}
-                errorMessage={errors.password}
+                message={errors.password}
                 placeholder='Password'
                 name='password'
                 secureTextEntry={true}

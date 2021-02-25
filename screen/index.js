@@ -4,3 +4,7 @@ export { default as RegisterScreen } from "./auth/Register";
 
 // Error
 export { default as LoadingScreen } from "./error/Loading";
+
+// Main
+
+export { default as MainScreen } from "./Main";

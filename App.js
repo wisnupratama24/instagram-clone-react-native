@@ -4,30 +4,13 @@ import { useFonts } from "expo-font";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { LandingScreen, LoadingScreen, RegisterScreen } from "./screen";
-import { LandingScreenName, RegisterScreenName } from "./constants/routes";
-import { View, TouchableWithoutFeedback, Keyboard } from "react-native";
+
+import { LoadingScreen, RegisterScreen, MainScreen } from "./screen";
+import { RegisterScreenName } from "./constants/routes";
+import { View, TouchableWithoutFeedback, Keyboard, Text } from "react-native";
 
 import * as firebase from "firebase";
-
-import {
-  API_KEY,
-  AUTH_DOMAIN,
-  PROJECT_ID,
-  STORAGE_BUCKET,
-  MESSAGING_SENDER_ID,
-  APP_ID,
-} from "@env";
-
-const firebaseConfig = {
-  apiKey: `${API_KEY}`,
-  authDomain: `${AUTH_DOMAIN}`,
-  databaseURL: `https://${PROJECT_ID}.firebaseio.com`,
-  projectId: `${PROJECT_ID}`,
-  storageBucket: `${STORAGE_BUCKET}`,
-  messagingSenderId: `${MESSAGING_SENDER_ID}`,
-  appId: `${APP_ID}`,
-};
+import { firebaseConfig } from "./config/firebase";
 
 if (!firebase.apps.length) {
   try {
@@ -36,11 +19,18 @@ if (!firebase.apps.length) {
     console.error("error", err.stack);
   }
 }
+
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+import { rootReducers } from "./redux/reducers";
+import thunk from "redux-thunk";
+import { globalStyles } from "./assets";
+
+const store = createStore(rootReducers, applyMiddleware(thunk));
+
 export default function App() {
   const Stack = createStackNavigator();
-  const [user, setUser] = useState({
-    loggedIn: false,
-  });
+  const [loggedIn, setloggedIn] = useState(false);
 
   const [loadFonts] = useFonts({
     "GrandHotel-Regular": require("./assets/fonts/GrandHotel-Regular.ttf"),
@@ -49,13 +39,9 @@ export default function App() {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        setUser({
-          loggedIn: true,
-        });
+        setloggedIn(true);
       } else {
-        setUser({
-          loggedIn: false,
-        });
+        setloggedIn(false);
       }
     });
   }, []);
@@ -64,22 +50,21 @@ export default function App() {
     return <LoadingScreen />;
   }
 
+  if (loggedIn) {
+    return (
+      <Provider store={store}>
+        <View style={globalStyles.global}>
+          <MainScreen />
+        </View>
+      </Provider>
+    );
+  }
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#F4F5F6",
-        }}>
+      <View style={globalStyles.global}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName={LandingScreenName}>
-            <Stack.Screen
-              name={LandingScreenName}
-              component={LandingScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
+          <Stack.Navigator initialRouteName={RegisterScreen}>
             <Stack.Screen
               name={RegisterScreenName}
               component={RegisterScreen}
