@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { LogBox } from "react-native";
 
-import { useFonts } from "expo-font";
+LogBox.ignoreLogs(["Setting a timer"]);
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import { LoadingScreen, RegisterScreen, MainScreen } from "./screen";
-import { RegisterScreenName } from "./constants/routes";
-import { View, TouchableWithoutFeedback, Keyboard, Text } from "react-native";
+import { useFonts } from "expo-font";
+
+import { LoadingScreen, AddScreen } from "./screen";
+import MainScreen from "./screen/Main";
+import { AddScreenName, MainScreenName } from "./constants/routes";
+import { View } from "react-native";
 
 import * as firebase from "firebase";
 import { firebaseConfig } from "./config/firebase";
@@ -25,13 +29,12 @@ import { createStore, applyMiddleware } from "redux";
 import { rootReducers } from "./redux/reducers";
 import thunk from "redux-thunk";
 import { globalStyles } from "./assets";
+import Landing from "./screen/auth/Landing";
 
 const store = createStore(rootReducers, applyMiddleware(thunk));
 
 export default function App() {
-  const Stack = createStackNavigator();
   const [loggedIn, setloggedIn] = useState(false);
-
   const [loadFonts] = useFonts({
     "GrandHotel-Regular": require("./assets/fonts/GrandHotel-Regular.ttf"),
   });
@@ -51,30 +54,37 @@ export default function App() {
   }
 
   if (loggedIn) {
+    const Stack = createStackNavigator();
+
     return (
       <Provider store={store}>
-        <View style={globalStyles.global}>
-          <MainScreen />
-        </View>
+        <NavigationContainer>
+          <View style={globalStyles.global}>
+            <Stack.Navigator>
+              <Stack.Screen
+                name={MainScreenName}
+                component={MainScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+
+              <Stack.Screen
+                name={AddScreenName}
+                component={AddScreen}
+                options={{
+                  title: "Overview",
+                  headerStyle: {
+                    backgroundColor: "#fff",
+                  },
+                }}
+              />
+            </Stack.Navigator>
+          </View>
+        </NavigationContainer>
       </Provider>
     );
   }
 
-  return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={globalStyles.global}>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName={RegisterScreen}>
-            <Stack.Screen
-              name={RegisterScreenName}
-              component={RegisterScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </View>
-    </TouchableWithoutFeedback>
-  );
+  return <Landing />;
 }

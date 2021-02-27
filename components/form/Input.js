@@ -4,7 +4,6 @@ import ErrorMessage from "../ErrorMessage";
 import { color } from "../../constants/color";
 
 function Input({ isValid, message, ...props }) {
-  console.log(isValid);
   return (
     <>
       <TextInput

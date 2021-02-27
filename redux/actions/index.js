@@ -1,5 +1,10 @@
 import firebase from "firebase";
-import { USER_STATE_CHANGE } from "../../constants/types";
+import {
+  GET_ALBUM_LIST,
+  SET_ALBUM_NAME,
+  USER_STATE_CHANGE,
+  SET_MEDIA_LIST,
+} from "../../constants/types";
 
 export function fetchUser() {
   return (dispatch) => {
@@ -17,3 +22,29 @@ export function fetchUser() {
       });
   };
 }
+
+export const getAllAlbumNames = (albums) => {
+  return (dispatch) => {
+    const listOfAlbums = albums.map((album) => album.title);
+    dispatch({ type: GET_ALBUM_LIST, albumList: listOfAlbums });
+  };
+};
+
+export const setAlbumName = (album) => {
+  return (dispatch) => {
+    dispatch({ type: SET_ALBUM_NAME, albumName: album });
+  };
+};
+
+export const mediaList = (albumList) => {
+  return (dispatch) => {
+    const setAlbumList = [];
+    albumList.forEach((photos) => {
+      setAlbumList.push({
+        id: photos.id,
+        uri: photos.uri,
+      });
+    });
+    dispatch({ type: SET_MEDIA_LIST, media: setAlbumList });
+  };
+};
