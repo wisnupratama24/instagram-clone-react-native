@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import { ListImage, ModalAlbum } from "../../components";
+import { ListImage } from "../../components";
 
+import { View } from "react-native";
 import Media from "../../helpers/Image";
 
 export default function Add() {
@@ -13,8 +14,9 @@ export default function Add() {
 
   return (
     <>
-      <ListImage />
-      <ModalAlbum />
+      <View style={{ flex: 1, marginHorizontal: 10 }}>
+        <ListImage />
+      </View>
     </>
   );
 }

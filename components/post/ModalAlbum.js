@@ -1,5 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { Modalize } from "react-native-modalize";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -8,8 +10,7 @@ import Constants from "expo-constants";
 import Media from "../../helpers/Image";
 import { getAllAlbumNames, setAlbumName } from "../../redux/actions";
 
-const ModalAlbum = () => {
-  const [visible, setVisible] = useState(false);
+const ModalAlbum = ({ cameraHandle }) => {
   const dispatch = useDispatch();
   const listAlbum = useSelector(({ addState }) => addState.albumList);
   const albumName = useSelector(({ addState }) => addState.albumName);
@@ -34,10 +35,15 @@ const ModalAlbum = () => {
 
   return (
     <>
-      <TouchableOpacity onPress={onOpen}>
-        <Text>{albumName}</Text>
-      </TouchableOpacity>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={onOpen} style={styles.touchable}>
+          <Text style={styles.albumName}>{albumName} </Text>
+        </TouchableOpacity>
 
+        <TouchableOpacity>
+          <MaterialCommunityIcons name='camera' color='black' size={26} />
+        </TouchableOpacity>
+      </View>
       <Modalize
         ref={modalizeRef}
         modalStyle={{
@@ -72,3 +78,16 @@ const ModalAlbum = () => {
 };
 
 export default ModalAlbum;
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 5,
+    paddingVertical: 5,
+    justifyContent: "space-between",
+    flexDirection: "row",
+  },
+  albumName: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+});

@@ -5,6 +5,7 @@ LogBox.ignoreLogs(["Setting a timer"]);
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { useFonts } from "expo-font";
 
@@ -58,30 +59,32 @@ export default function App() {
 
     return (
       <Provider store={store}>
-        <NavigationContainer>
-          <View style={globalStyles.global}>
-            <Stack.Navigator>
-              <Stack.Screen
-                name={MainScreenName}
-                component={MainScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <View style={globalStyles.global}>
+              <Stack.Navigator>
+                <Stack.Screen
+                  name={MainScreenName}
+                  component={MainScreen}
+                  options={{
+                    headerShown: false,
+                  }}
+                />
 
-              <Stack.Screen
-                name={AddScreenName}
-                component={AddScreen}
-                options={{
-                  title: "Overview",
-                  headerStyle: {
-                    backgroundColor: "#fff",
-                  },
-                }}
-              />
-            </Stack.Navigator>
-          </View>
-        </NavigationContainer>
+                <Stack.Screen
+                  name={AddScreenName}
+                  component={AddScreen}
+                  options={{
+                    title: "Overview",
+                    headerStyle: {
+                      backgroundColor: "#fff",
+                    },
+                  }}
+                />
+              </Stack.Navigator>
+            </View>
+          </NavigationContainer>
+        </SafeAreaProvider>
       </Provider>
     );
   }

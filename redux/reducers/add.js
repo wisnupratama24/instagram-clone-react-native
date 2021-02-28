@@ -6,6 +6,7 @@ import {
 
 const initialState = {
   media: {},
+  selectedImage: "",
   albumName: "Camera",
   albumList: [],
 };
@@ -25,6 +26,7 @@ export const addReducers = (state = initialState, action) => {
     case SET_MEDIA_LIST:
       return {
         ...state,
+        selectedImage: action.selectedImage,
         media: action.media,
       };
     default:

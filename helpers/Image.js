@@ -7,7 +7,6 @@ import * as ImagePicker from "expo-image-picker";
 
 const getAlbumList = async () => {
   const getAlbum = await MediaLibrary.getAlbumsAsync();
-  console.log("album", getAlbum);
   return getAlbum;
 };
 

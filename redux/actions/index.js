@@ -6,6 +6,8 @@ import {
   SET_MEDIA_LIST,
 } from "../../constants/types";
 
+import { useSelector } from "react-redux";
+
 export function fetchUser() {
   return (dispatch) => {
     firebase
@@ -45,6 +47,11 @@ export const mediaList = (albumList) => {
         uri: photos.uri,
       });
     });
-    dispatch({ type: SET_MEDIA_LIST, media: setAlbumList });
+
+    dispatch({
+      type: SET_MEDIA_LIST,
+      selectedImage: setAlbumList[0]?.uri,
+      media: setAlbumList,
+    });
   };
 };
